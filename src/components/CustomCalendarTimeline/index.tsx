@@ -1,12 +1,12 @@
 import React from "react";
 import Timeline, { Unit } from "react-calendar-timeline";
 import { add } from "date-fns";
-import { Tooltip, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
 import moment from "moment";
 import "./App.css";
 import "react-calendar-timeline/lib/Timeline.css";
 import "moment/locale/pt-br";
+import TimelineItem from "./TimelineItem";
 
 interface IKeys {
   groupIdKey: string;
@@ -58,8 +58,6 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
   moment.locale("pt-br");
   const DEFAULT_TIME_START = add(new Date(), { hours: -12 });
   const DEFAULT_TIME_END = add(new Date(), { hours: 12 });
-  const DRAGGING_BG_COLOR = "red";
-  const RESIZING_BORDER_COLOR = "red";
 
   const itemRenderer = ({
     item,
@@ -68,67 +66,13 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
     getItemProps,
     getResizeProps,
   }: any) => {
-    const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
-    const backgroundColor = itemContext.selected
-      ? itemContext.dragging
-        ? DRAGGING_BG_COLOR
-        : item.selectedBgColor
-      : item.bgColor;
-    const borderColor = itemContext.resizing
-      ? RESIZING_BORDER_COLOR
-      : item.bgColor;
-    const wrapperProps = getItemProps({
-      style: {
-        backgroundColor,
-        color: item.color,
-        borderColor,
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderRadius: 4,
-        borderLeftWidth: itemContext.selected ? 6 : 1,
-        borderRightWidth: itemContext.selected ? 6 : 1,
-      },
-    });
-    console.log("PROPS");
-    console.log(wrapperProps);
-
     return (
-      <div {...wrapperProps}>
-        {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
-        <div
-          className={itemContext.selected ? "table-custom-item-wrapper" : ""}
-        >
-          <Tooltip
-            arrow
-            title={
-              <div
-                style={{
-                  height: "100px",
-                  width: "300px",
-                  // backgroundColor: "red",
-                }}
-              >
-                CUSTOM TOOLTIP
-                <Button variant="contained">Editar</Button>
-              </div>
-            }
-          >
-            <div
-              style={{
-                height: itemContext.dimensions.height,
-                overflow: "hidden",
-                paddingLeft: 3,
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {itemContext.title}
-            </div>
-          </Tooltip>
-
-          {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
-        </div>
-      </div>
+      <TimelineItem
+        item={item}
+        itemContext={itemContext}
+        getItemProps={getItemProps}
+        getResizeProps={getResizeProps}
+      />
     );
   };
 
