@@ -1,0 +1,64 @@
+/* custom resize handle begin */
+div.table-custom-item-wrapper {
+  position: relative !important;
+  height: inherit;
+}
+
+div.table-custom-item-wrapper::before,
+div.table-custom-item-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+}
+
+div.table-custom-item-wrapper::before {
+  left: -6px;
+}
+
+div.table-custom-item-wrapper::after {
+  right: -6px;
+}
+/* custom resize handle end */
+
+/* table style begin */
+
+.rct-header-root {
+  background-color: white !important;
+  color: #cccccc;
+  border: 1px solid;
+
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+}
+
+.rct-header-root span {
+  color: #cccccc;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rct-dateHeader {
+  background-color: white !important;
+}
+
+.rct-sidebar-row {
+  margin-left: 4px !important;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* div.rct-item {
+  border-color: aqua !important;
+} */
+
+/* table style end */
+
+/* div.custom-calendar-timeline-wrapper {
+  height: 400px;
+  overflow-y: scroll;
+} */
