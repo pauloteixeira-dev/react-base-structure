@@ -1,5 +1,5 @@
-import { add, getTime } from "date-fns";
 import React, { useState } from "react";
+import { add, getTime } from "date-fns";
 import CustomCalendarTimeline from "./components/CustomCalendarTimeline";
 
 function App() {
@@ -14,6 +14,27 @@ function App() {
     itemTimeStartKey: "start_time",
     itemTimeEndKey: "end_time",
     groupLabelKey: "title",
+  };
+
+  const materialColors = {
+    green: {
+      200: "#a5d6a7",
+      500: "#4caf50",
+    },
+    yellow: {
+      300: "#fff176",
+      600: "#fdd835",
+    },
+    grey: {
+      50: "#fafafa",
+      400: "#bdbdbd",
+      500: "#9e9e9e",
+      900: "#212121",
+    },
+    red: {
+      200: "#ef9a9a",
+      500: "#f44336",
+    },
   };
 
   const [groups] = useState([
@@ -51,9 +72,9 @@ function App() {
       canMove: true,
       canResize: "both",
       className: "",
-      bgColor: "#1F9E27",
-      selectedBgColor: "rgba(244, 215, 151, 1)",
-      color: "white",
+      bgColor: materialColors.green[500],
+      selectedBgColor: materialColors.green[200],
+      color: materialColors.grey[50],
     },
     {
       id: 2,
@@ -64,9 +85,9 @@ function App() {
       canMove: true,
       canResize: "both",
       className: "",
-      bgColor: "#0065BB",
-      selectedBgColor: "#71CBD0",
-      color: "white",
+      bgColor: materialColors.grey[500],
+      selectedBgColor: materialColors.grey[400],
+      color: materialColors.grey[50],
     },
     {
       id: 3,
@@ -77,9 +98,22 @@ function App() {
       canMove: true,
       canResize: "both",
       className: "",
-      bgColor: "#B71C1C",
-      selectedBgColor: "rgba(244, 215, 151, 1)",
-      color: "white",
+      bgColor: materialColors.red[500],
+      selectedBgColor: materialColors.red[200],
+      color: materialColors.grey[50],
+    },
+    {
+      id: 4,
+      group: 3,
+      title: "ITEM N° 4",
+      start_time: getTime(add(new Date(), { hours: -1 })),
+      end_time: getTime(add(new Date(), { hours: 3 })),
+      canMove: true,
+      canResize: "both",
+      className: "",
+      bgColor: materialColors.yellow[600],
+      selectedBgColor: materialColors.yellow[300],
+      color: materialColors.grey[900],
     },
   ]);
 
@@ -89,6 +123,7 @@ function App() {
     newGroupOrder: number
   ) => {
     const group = groups[newGroupOrder];
+    console.log("ITEM MOVE ========================");
 
     setItems(
       items.map((item) =>
@@ -108,6 +143,7 @@ function App() {
     time: number,
     edge: "right" | "left"
   ) => {
+    console.log("ITEM RESIZE ========================");
     setItems(
       items.map((item) =>
         item.id === itemId
@@ -120,6 +156,13 @@ function App() {
     );
   };
 
+  const getData = (visibleTimeStart: number, visibleTimeEnd: number) => {
+    console.log("time change ============");
+    console.log(new Date(visibleTimeStart));
+    console.log(new Date(visibleTimeEnd));
+    console.log("============");
+  };
+
   return (
     <div>
       <CustomCalendarTimeline
@@ -128,6 +171,7 @@ function App() {
         items={items}
         onItemMove={onItemMove}
         onItemResize={onItemResize}
+        getData={getData}
       />
     </div>
   );

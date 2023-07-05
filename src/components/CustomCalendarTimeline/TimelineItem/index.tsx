@@ -13,8 +13,8 @@ import {
 const TimelineItem: React.FC<
   ReactCalendarItemRendererProps<TimelineItemBase<number>>
 > = ({ getResizeProps, getItemProps, itemContext, item }) => {
-  const DRAGGING_BG_COLOR = "red";
-  const RESIZING_BORDER_COLOR = "red";
+  const DRAGGING_BG_COLOR = "rgba(0,0,0,0.3)";
+  const RESIZING_BORDER_COLOR = "rgba(0,0,0,0.3)";
 
   const itemAsAny = item as any;
 

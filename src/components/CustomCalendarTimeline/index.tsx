@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Timeline, { Unit } from "react-calendar-timeline";
-import { add } from "date-fns";
+import { add, getTime } from "date-fns";
 import { Typography } from "@mui/material";
+import TimelineItem from "./TimelineItem";
 import moment from "moment";
 import "./App.css";
 import "react-calendar-timeline/lib/Timeline.css";
 import "moment/locale/pt-br";
-import TimelineItem from "./TimelineItem";
 
 interface IKeys {
   groupIdKey: string;
@@ -46,6 +46,7 @@ interface CustomCalendarTimelineProps {
   items: IItem[];
   onItemMove: (itemId: number, dragTime: number, newGroupOrder: number) => void;
   onItemResize: (itemId: number, time: number, edge: "right" | "left") => void;
+  getData: (fromDate: number, toDate: number) => void;
 }
 
 const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
@@ -54,10 +55,29 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
   items,
   onItemMove,
   onItemResize,
+  getData,
 }) => {
   moment.locale("pt-br");
   const DEFAULT_TIME_START = add(new Date(), { hours: -12 });
   const DEFAULT_TIME_END = add(new Date(), { hours: 12 });
+  const MAX_ZOOM = 1000 * 60 * 60 * 24 * 31;
+
+  const getTriggersToVisibleTime = (timeStart: number, timeEnd: number) => {
+    const step = timeEnd - timeStart;
+    const leftTrigger = timeStart - step;
+    const rightTrigger = timeEnd + step;
+    return [leftTrigger, rightTrigger];
+  };
+
+  const [initialLeftTrigger, initialRightTrigger] = getTriggersToVisibleTime(
+    getTime(DEFAULT_TIME_START),
+    getTime(DEFAULT_TIME_END)
+  );
+
+  const [earliestVisibleTime, setEarliestVisibleTime] = useState<number>();
+  const [latestVisibleTime, setLatestVisibleTime] = useState<number>();
+  const [leftTrigger, setLeftTrigger] = useState<number>(initialLeftTrigger);
+  const [rightTrigger, setRightTrigger] = useState<number>(initialRightTrigger);
 
   const itemRenderer = ({
     item,
@@ -98,12 +118,16 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
     updateScrollCanvas: (start: number, end: number) => void,
     unit: Unit
   ) => {
-    console.log("time change ============");
-    console.log(new Date(visibleTimeStart));
-    console.log(new Date(visibleTimeEnd));
-    // debouncer
-    // função que verifica se esta buscando mais itens da esquerda ou direita
-    // disparar busca por dados de um mês frente ou atras
+    setEarliestVisibleTime(visibleTimeStart);
+    setLatestVisibleTime(visibleTimeEnd);
+    if (visibleTimeStart < leftTrigger || rightTrigger < visibleTimeEnd) {
+      const [newLeftTrigger, newRightTrigger] = getTriggersToVisibleTime(
+        visibleTimeStart,
+        visibleTimeEnd
+      );
+      getData(newLeftTrigger, newRightTrigger); // then setar novos triggers
+    }
+    // envolver o que esta dentro do if numa função com debouncer
     updateScrollCanvas(visibleTimeStart, visibleTimeEnd);
   };
 
@@ -122,10 +146,13 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
           lineHeight={40}
           defaultTimeStart={DEFAULT_TIME_START}
           defaultTimeEnd={DEFAULT_TIME_END}
+          visibleTimeStart={earliestVisibleTime}
+          visibleTimeEnd={latestVisibleTime}
           onTimeChange={handleTimeChange}
           itemRenderer={itemRenderer}
           onItemMove={handleItemMove}
           onItemResize={handleItemResize}
+          maxZoom={MAX_ZOOM}
         />
       </Typography>
     </div>
