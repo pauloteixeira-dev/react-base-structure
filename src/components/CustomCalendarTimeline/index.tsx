@@ -32,8 +32,8 @@ interface IItem {
   title: string;
   start_time: number;
   end_time: number;
-  canMove: boolean;
-  canResize: string;
+  canMove?: boolean;
+  canResize?: string | boolean;
   className: string;
   bgColor: string;
   selectedBgColor: string;
@@ -60,7 +60,7 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
   moment.locale("pt-br");
   const DEFAULT_TIME_START = add(new Date(), { hours: -12 });
   const DEFAULT_TIME_END = add(new Date(), { hours: 12 });
-  const MAX_ZOOM = 1000 * 60 * 60 * 24 * 31;
+  const MAX_ZOOM = 1000 * 60 * 60 * 24 * 31; // 1 month in milliseconds
 
   const getTriggersToVisibleTime = (timeStart: number, timeEnd: number) => {
     const step = timeEnd - timeStart;
@@ -112,6 +112,16 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
     onItemResize(itemId, time, edge);
   };
 
+  const handleGetData = (visibleTimeStart: number, visibleTimeEnd: number) => {
+    const [newLeftTrigger, newRightTrigger] = getTriggersToVisibleTime(
+      visibleTimeStart,
+      visibleTimeEnd
+    );
+    setLeftTrigger(newLeftTrigger);
+    setRightTrigger(newRightTrigger);
+    getData(newLeftTrigger, newRightTrigger);
+  };
+
   const handleTimeChange = (
     visibleTimeStart: number,
     visibleTimeEnd: number,
@@ -121,11 +131,7 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
     setEarliestVisibleTime(visibleTimeStart);
     setLatestVisibleTime(visibleTimeEnd);
     if (visibleTimeStart < leftTrigger || rightTrigger < visibleTimeEnd) {
-      const [newLeftTrigger, newRightTrigger] = getTriggersToVisibleTime(
-        visibleTimeStart,
-        visibleTimeEnd
-      );
-      getData(newLeftTrigger, newRightTrigger); // then setar novos triggers
+      handleGetData(visibleTimeStart, visibleTimeEnd);
     }
     // envolver o que esta dentro do if numa função com debouncer
     updateScrollCanvas(visibleTimeStart, visibleTimeEnd);
