@@ -120,6 +120,7 @@ const CustomCalendarTimeline: React.FC<CustomCalendarTimelineProps> = ({
     setLeftTrigger(newLeftTrigger);
     setRightTrigger(newRightTrigger);
     getData(newLeftTrigger, newRightTrigger);
+    // implementar debouncer
   };
 
   const handleTimeChange = (
