@@ -7,7 +7,7 @@ import {
 import {
   StyledItemContent,
   StyledItemWrapper,
-  StyledPseudoResizeHandleWrapper,
+  // StyledPseudoResizeHandleWrapper,
 } from "./styles";
 
 const TimelineItem: React.FC<
@@ -18,7 +18,7 @@ const TimelineItem: React.FC<
 
   const itemAsAny = item as any;
 
-  const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
+  // const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 
   const backgroundColor = itemContext.selected
     ? itemContext.dragging
@@ -31,39 +31,46 @@ const TimelineItem: React.FC<
     : itemAsAny.bgColor;
   const wrapperProps = getItemProps({});
 
+  const filteredWrapperProps = {
+    className: wrapperProps.className,
+    key: wrapperProps.key,
+    ref: wrapperProps.ref,
+    style: wrapperProps.style,
+  };
+
   return (
     <StyledItemWrapper
-      {...wrapperProps}
+      {...filteredWrapperProps}
       backgroundColor={backgroundColor}
       color={itemAsAny.color}
       borderColor={borderColor}
       borderLeftWidth={itemContext.selected ? "6px" : "1px"}
       borderRightWidth={itemContext.selected ? "6px" : "1px"}
     >
-      {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
-      <StyledPseudoResizeHandleWrapper showHandles={itemContext.selected}>
-        <Tooltip
-          arrow
-          title={
-            <div
-              style={{
-                height: "100px",
-                width: "300px",
-                // backgroundColor: "red",
-              }}
-            >
-              CUSTOM TOOLTIP
-              <Button variant="contained">Editar</Button>
-            </div>
-          }
-        >
-          <StyledItemContent height={`${itemContext.dimensions.height}px`}>
-            {itemContext.title}
-          </StyledItemContent>
-        </Tooltip>
-      </StyledPseudoResizeHandleWrapper>
+      {/* {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null} */}
+      {/* <StyledPseudoResizeHandleWrapper showHandles={itemContext.selected}> */}
+      <Tooltip
+        arrow
+        title={
+          <div
+            style={{
+              height: "100px",
+              width: "300px",
+              // backgroundColor: "red",
+            }}
+          >
+            CUSTOM TOOLTIP
+            <Button variant="contained">Editar</Button>
+          </div>
+        }
+      >
+        <StyledItemContent height={`${itemContext.dimensions.height}px`}>
+          {itemContext.title}
+        </StyledItemContent>
+      </Tooltip>
+      {/* </StyledPseudoResizeHandleWrapper> */}
 
-      {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
+      {/* {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null} */}
     </StyledItemWrapper>
   );
 };
